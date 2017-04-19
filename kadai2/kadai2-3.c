@@ -8,7 +8,7 @@ main()
 
   for(i=0;i<10;i++){
     printf("data[%d]===> ", i+1);
-    scanf("%d", &data[i]);
+    scanf("%d", (pt + i));
   }
 
   for(i=0;i<10;i++){

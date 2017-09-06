@@ -10,7 +10,7 @@ main()
 /* goukei関数 */
 int goukei(int *pt)
 {
-  int i, s= 0;
+  int i, s = 0;
   for(i=0; i<=4; i++){
     s = s + *pt;
     pt++;

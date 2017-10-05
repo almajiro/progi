@@ -18,7 +18,7 @@ main()
 
   while(fscanf(fp, "%4d%31s%10d", &num, hinmei, &kosu) != EOF){
     fseek(fp, num*47, SEEK_SET);
-    printf("%d %s\n", num, hinmei);
+    printf("%d %s %d\n", num, hinmei, kosu);
   }
 
   fclose(fp);

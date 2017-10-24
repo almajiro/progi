@@ -1,11 +1,13 @@
-/* */
-#include<stdio.h>
-#include<stdlib.h>
+/* kadai11-1.c it 2017/10/24 */
+#include <stdio.h>
+#include <stdlib.h>
 
 int menu(void);
+int get_max_no(void);
 void show(void);
 void add(void);
 void renew(void);
+FILE *file_open(char *mode);
 
 FILE *fp;
 struct SEISEKI{
@@ -13,7 +15,6 @@ struct SEISEKI{
   char namae[20];
   int tensu;
 };
-
 
 int main(void)
 {
@@ -60,57 +61,70 @@ void show(void)
   int i = 0;
   struct SEISEKI data;
 
-  printf("\n名前と点数を出力\n");
-  fp = fopen("seiseki.txt", "r");
-  if(fp == NULL){
-    puts("ファイルがオープンできません。");
-    exit(1);
-  }
+  printf("名前と点数を出力\n\n");
+  fp = file_open("r");
 
-  while(fscanf(fp, "%3d%20s%3d", &data.no, data.namae, &data.tensu) != EOF){
+  while(fscanf(fp, "%3d%20s%4d", &data.no, data.namae, &data.tensu) != EOF){
     printf("%d %s %d\n", data.no, data.namae, data.tensu);
     i++;
     fseek(fp, i*28L, SEEK_SET);
   }
 
   fclose(fp);
-  puts("");
 }
 
 void add()
 {
-  int i = 1;
   struct SEISEKI data;
-  struct SEISEKI temp;
 
   printf("氏名と点数を入力: ");
   scanf("%s %d", data.namae, &data.tensu);
 
-  fp = fopen("seiseki.txt", "a");
-  if(fp == NULL){
-    puts("ファイルがオープンできません。");
-    exit(1);
+
+  fp = file_open("a+");
+  fseek(fp, -28L, SEEK_END);
+  if(fscanf(fp, "%3d", &data.no) == EOF){
+    data.no = 0;
   }
 
-  while(fscanf(fp, "%3d%20s%3d", &temp.no, temp.namae, &temp.tensu) != EOF){
-    fseek(fp, i*28L, SEEK_SET);
-    i++;
-  }
-
-  fprintf(fp, "%3d%20s%3d\n", i, data.namae, data.tensu);
-
+  fseek(fp, 0L, SEEK_END);
+  fprintf(fp, "%3d%20s%4d\n", (data.no + 1), data.namae, data.tensu);
   fclose(fp);
-  puts("追加しました");
+
+  puts("追加しました。");
 }
 
 void renew(void)
 {
-  int id;
+  struct SEISEKI data;
 
   printf("何番を更新しますか？ ");
-  scanf("%d", &id);
+  scanf("%d", &data.no);
 
-  fp = fopen("seiseki.txt", "w");
-
+  fp = file_open("r");
+  fseek(fp, (data.no - 1)*28L, SEEK_SET);
+  fscanf(fp, "%3d%20s%4d", &data.no, data.namae, &data.tensu);
   fclose(fp);
+
+  printf("現在のデータは %s %d です。更新データを入力: ", data.namae, data.tensu);
+  scanf("%s %d", data.namae, &data.tensu);
+
+  fp = file_open("r+");
+  fseek(fp, (data.no - 1)*28L, SEEK_SET);
+  fprintf(fp, "%3d%20s%4d\n", data.no, data.namae, data.tensu);
+  fclose(fp);
+
+  puts("変更しました。");
+}
+
+FILE *file_open(char *mode)
+{
+  FILE *_fp;
+  _fp = fopen("seiseki.txt", mode);
+  if(_fp == NULL){
+    puts("ファイルがオープンできません。");
+    exit(1);
+  }
+
+  return _fp;
 }

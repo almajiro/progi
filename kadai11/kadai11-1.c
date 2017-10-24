@@ -80,7 +80,6 @@ void add()
   printf("氏名と点数を入力: ");
   scanf("%s %d", data.namae, &data.tensu);
 
-
   fp = file_open("a+");
   fseek(fp, -28L, SEEK_END);
   if(fscanf(fp, "%3d", &data.no) == EOF){

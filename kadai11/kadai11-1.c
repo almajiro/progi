@@ -3,7 +3,6 @@
 #include <stdlib.h>
 
 int menu(void);
-int get_max_no(void);
 void show(void);
 void add(void);
 void renew(void);
